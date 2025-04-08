@@ -1,0 +1,72 @@
+services:
+  discovery-server:
+    build: ./discovery-server
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    networks:
+      - educ-network
+
+  mysql-container:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: sistema_educativo
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - educ-network
+
+  usuarios-servicio:
+    build: ./usuarios-servicio
+    container_name: usuarios-servicio
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:3306/usuarios_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+    depends_on:
+      - discovery-server
+      - mysql-container
+    networks:
+      - educ-network
+
+  asignaturas-servicio:
+    build: ./asignaturas-servicio
+    container_name: asignaturas-servicio
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:3306/asignaturas_db
+    depends_on:
+      - discovery-server
+      - mysql-container
+    networks:
+      - educ-network
+
+  matriculas-servicio:
+    build: ./matriculas-servicio
+    container_name: matriculas-servicio
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:3306/matriculas_db
+    depends_on:
+      - discovery-server
+      - mysql-container
+      - usuarios-servicio
+      - asignaturas-servicio
+    networks:
+      - educ-network
+
+networks:
+  educ-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
