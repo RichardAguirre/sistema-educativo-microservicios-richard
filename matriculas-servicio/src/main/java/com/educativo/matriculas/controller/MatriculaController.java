@@ -10,6 +10,9 @@ import com.educativo.matriculas.repository.MatriculaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -34,6 +37,7 @@ public class MatriculaController {
     }
     
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> crearMatricula(@RequestBody Matricula matricula) {
         try {
             // Validate that the user exists
@@ -41,6 +45,18 @@ public class MatriculaController {
             if (usuario == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("Usuario no encontrado con ID: " + matricula.getUsuarioId());
+            }
+            
+            // Verify user is creating their own enrollment or is admin
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String currentUsername = auth.getName();
+            boolean isAdmin = auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            
+            // If not admin and trying to create enrollment for another user
+            if (!isAdmin && !currentUsername.equals(usuario.getEmail())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permiso para crear matrículas para otro usuario");
             }
             
             // Validate that all subjects exist
@@ -71,6 +87,7 @@ public class MatriculaController {
     }
     
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> obtenerMatricula(@PathVariable Long id) {
         // Find matricula by ID
         Matricula matricula = matriculaRepository.findById(id).orElse(null);
@@ -83,6 +100,18 @@ public class MatriculaController {
         try {
             // Get detailed information about the user and subjects
             Usuario usuario = usuarioClient.getUsuarioById(matricula.getUsuarioId());
+            
+            // Verify user is viewing their own enrollment or is admin
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String currentUsername = auth.getName();
+            boolean isAdmin = auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            
+            // If not admin and trying to view enrollment of another user
+            if (!isAdmin && !currentUsername.equals(usuario.getEmail())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permiso para ver matrículas de otro usuario");
+            }
             
             List<Asignatura> asignaturas = new ArrayList<>();
             for (Long asignaturaId : matricula.getAsignaturasIds()) {
@@ -104,6 +133,7 @@ public class MatriculaController {
     }
     
     @GetMapping("/usuario/{usuarioId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> obtenerMatriculasPorUsuario(@PathVariable Long usuarioId) {
         try {
             // Verify that the user exists
@@ -111,6 +141,18 @@ public class MatriculaController {
             if (usuario == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("Usuario no encontrado con ID: " + usuarioId);
+            }
+            
+            // Verify user is viewing their own enrollments or is admin
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String currentUsername = auth.getName();
+            boolean isAdmin = auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            
+            // If not admin and trying to view enrollments of another user
+            if (!isAdmin && !currentUsername.equals(usuario.getEmail())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permiso para ver matrículas de otro usuario");
             }
             
             // Find matriculas by usuario
@@ -124,6 +166,7 @@ public class MatriculaController {
     }
     
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Matricula> listarMatriculas() {
         return matriculaRepository.findAll();
     }

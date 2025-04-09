@@ -4,6 +4,7 @@ import com.educativo.asignaturas.model.Asignatura;
 import com.educativo.asignaturas.repository.AsignaturaRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,8 +45,22 @@ public class AsignaturaController {
         return asignaturaRepository.findById(id).orElse(null);
     }
     
-    @PostMapping
+    @PostMapping("/crear")
+    @PreAuthorize("hasRole('ADMIN')")
     public Asignatura crearAsignatura(@RequestBody Asignatura asignatura) {
         return asignaturaRepository.save(asignatura);
+    }
+    
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Asignatura actualizarAsignatura(@PathVariable Long id, @RequestBody Asignatura asignatura) {
+        asignatura.setId(id);
+        return asignaturaRepository.save(asignatura);
+    }
+    
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void eliminarAsignatura(@PathVariable Long id) {
+        asignaturaRepository.deleteById(id);
     }
 }
