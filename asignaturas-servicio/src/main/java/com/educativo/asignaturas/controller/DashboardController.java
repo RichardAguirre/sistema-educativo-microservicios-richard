@@ -31,10 +31,8 @@ public class DashboardController {
 
     @GetMapping
     public String dashboard(Model model) {
-        // Obtener información de salud
         HealthComponent health = healthEndpoint.health();
         
-        // Obtener métricas importantes
         double systemCpuUsage = 0;
         double processCpuUsage = 0;
         long jvmMemoryUsed = 0;
@@ -44,35 +42,31 @@ public class DashboardController {
             systemCpuUsage = metricsEndpoint.metric("system.cpu.usage", null)
                     .getMeasurements().stream()
                     .findFirst()
-                    .map(m -> m.getValue() * 100) // Convertir a porcentaje
+                    .map(m -> m.getValue() * 100)
                     .orElse(0.0);
             
             processCpuUsage = metricsEndpoint.metric("process.cpu.usage", null)
                     .getMeasurements().stream()
                     .findFirst()
-                    .map(m -> m.getValue() * 100) // Convertir a porcentaje
+                    .map(m -> m.getValue() * 100)
                     .orElse(0.0);
             
-            // Corregido: usar longValue() en lugar de cast directo
             jvmMemoryUsed = metricsEndpoint.metric("jvm.memory.used", null)
                     .getMeasurements().stream()
                     .findFirst()
                     .map(m -> m.getValue().longValue())
                     .orElse(0L);
             
-            // Corregido: usar longValue() en lugar de cast directo
             jvmMemoryMax = metricsEndpoint.metric("jvm.memory.max", null)
                     .getMeasurements().stream()
                     .findFirst()
                     .map(m -> m.getValue().longValue())
                     .orElse(1L);
         } catch (Exception e) {
-            // Manejar posibles errores al obtener métricas
         }
         
         double memoryUsagePercent = (double) jvmMemoryUsed / jvmMemoryMax * 100;
         
-        // Agregar información al modelo
         model.addAttribute("applicationName", applicationName.toUpperCase());
         model.addAttribute("serverPort", serverPort);
         model.addAttribute("health", health);

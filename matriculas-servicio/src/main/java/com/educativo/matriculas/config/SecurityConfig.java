@@ -27,11 +27,11 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/dashboard/**").permitAll() // Permitir acceso al dashboard
+                .requestMatchers("/dashboard/**").permitAll()
                 .requestMatchers("/matriculas").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/matriculas/{id}").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/matriculas/usuario/{usuarioId}").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/actuator/**").permitAll() // Para monitoreo de salud
+                .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

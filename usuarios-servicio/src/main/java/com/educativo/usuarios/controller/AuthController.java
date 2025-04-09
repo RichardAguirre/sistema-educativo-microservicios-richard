@@ -61,12 +61,11 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Error: Email ya está en uso!");
         }
 
-        // Crear nuevo usuario
         Usuario usuario = new Usuario();
         usuario.setNombre(registroRequest.getNombre());
         usuario.setEmail(registroRequest.getEmail());
         usuario.setPassword(passwordEncoder.encode(registroRequest.getPassword()));
-        usuario.setRol("USER"); // Por defecto asignamos rol USER
+        usuario.setRol("USER");
 
         usuarioRepository.save(usuario);
 

@@ -27,11 +27,11 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/asignaturas").permitAll() // Permitir listar asignaturas públicamente
-                .requestMatchers("/asignaturas/{id}").permitAll() // Permitir ver detalles de asignaturas
-                .requestMatchers("/dashboard/**").permitAll() // Permitir acceso al dashboard
-                .requestMatchers("/asignaturas/crear").hasRole("ADMIN") // Solo admin puede crear
-                .requestMatchers("/actuator/**").permitAll() // Para monitoreo de salud
+                .requestMatchers("/asignaturas").permitAll()
+                .requestMatchers("/asignaturas/{id}").permitAll()
+                .requestMatchers("/dashboard/**").permitAll()
+                .requestMatchers("/asignaturas/crear").hasRole("ADMIN")
+                .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
