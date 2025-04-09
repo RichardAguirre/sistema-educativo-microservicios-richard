@@ -7,6 +7,7 @@ public class Usuario {
     private Long id;
     private String nombre;
     private String email;
+    private String rol;
     
     // Default constructor
     public Usuario() {
@@ -17,6 +18,7 @@ public class Usuario {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
+        this.rol = "USER";
     }
     
     // Getters and setters
@@ -42,5 +44,13 @@ public class Usuario {
     
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 }
