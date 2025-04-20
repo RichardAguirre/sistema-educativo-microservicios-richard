@@ -2,6 +2,7 @@ package com.educativo.asignaturas.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,6 +17,7 @@ import com.educativo.asignaturas.security.JwtTokenProvider;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -32,13 +34,14 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(mvc.pattern("/asignaturas")).permitAll()
                 .requestMatchers(mvc.pattern("/asignaturas/{id}")).permitAll()
-                .requestMatchers(mvc.pattern("/dashboard/**")).permitAll()
                 .requestMatchers(mvc.pattern("/asignaturas/crear")).hasRole("ADMIN")
                 .requestMatchers(mvc.pattern("/actuator/**")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
         return http.build();
     }
