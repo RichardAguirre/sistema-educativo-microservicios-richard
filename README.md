@@ -270,24 +270,105 @@ docker-compose build
 
 ## Ejecución de Pruebas
 
-Para ejecutar las pruebas de cada microservicio:
+En este proyecto se han implementado pruebas unitarias y de integración para garantizar la calidad y robustez de cada microservicio. A continuación, se detalla la estructura de pruebas y cómo ejecutarlas.
+
+Tipos de Pruebas Implementadas
+Pruebas Unitarias con Mockito
+Estas pruebas verifican el comportamiento de componentes individuales aislando sus dependencias mediante mocks.
+
+Pruebas de Integración con WebTestClient
+Estas pruebas verifican la interacción entre componentes y la API REST utilizando solicitudes HTTP reales pero en un entorno controlado.
+
+Ejecución de Pruebas Específicas
+Para ejecutar pruebas específicas de cada microservicio, se pueden utilizar los siguientes comandos:
+
+Microservicio de Usuarios
 
 ```bash
-# Pruebas del servicio de usuarios
-mvn test -f usuarios-servicio\pom.xml
+# Ejecutar todas las pruebas del microservicio
+mvn test -pl usuarios-servicio
 
-# Pruebas del servicio de asignaturas
-mvn test -f asignaturas-servicio\pom.xml
-
-# Pruebas del servicio de matrículas
-mvn test -f matriculas-servicio\pom.xml
+# Ejecutar prueba específica
+mvn test -pl usuarios-servicio -Dtest=AuthControllerTest
+mvn test -pl usuarios-servicio -Dtest=UsuarioControllerTest
 ```
 
-Para ejecutar todas las pruebas secuencialmente:
+Microservicio de Asignaturas
 
 ```bash
-mvn test -f discovery-server\pom.xml && mvn test -f usuarios-servicio\pom.xml && mvn test -f asignaturas-servicio\pom.xml && mvn test -f matriculas-servicio\pom.xml
+# Ejecutar todas las pruebas del microservicio
+mvn test -pl asignaturas-servicio
+
+# Ejecutar prueba específica
+mvn test -pl asignaturas-servicio -Dtest=AsignaturaControllerTest
+mvn test -pl asignaturas-servicio -Dtest=AsignaturaWebTestClientIntegrationTest
 ```
+
+Microservicio de Matrículas
+
+```bash
+# Ejecutar todas las pruebas del microservicio
+mvn test -pl matriculas-servicio
+
+# Ejecutar prueba específica
+mvn test -pl matriculas-servicio -Dtest=MatriculaControllerTest
+mvn test -pl matriculas-servicio -Dtest=MatriculaWebTestClientIntegrationTest
+```
+
+### Detalles de las Pruebas Implementadas
+
+Pruebas Unitarias
+
+| Microservicio    | Clase de Prueba    | Descripción                           | Resultado Esperado |
+| :--------- | :------- | :--------------------------------------- | :--------------------------------------- |
+| `Usuarios`   | `AuthControllerTest` | Verifica el proceso de autenticación y generación de token JWT | Validación de credenciales correcta generación de token JWT y devolución de datos del usuario |
+| `Usuarios`    | `UsuarioControllerTest` | Verifica la obtención y listado de usuarios | Recuperación correcta de datos de usuarios desde el repositorio |
+| `Asignaturas` | `AsignaturaControllerTest` | Verifica el listado de asignaturas | Devolución de lista de asignaturas desde el repositorio |
+| `Matrículas` | `MatriculaControllerTest` | Verifica la creación de una matrícula | Creación correcta de matrícula con validación de usuario y asignaturas |
+
+Pruebas de Integración
+
+| Microservicio    | Clase de Prueba    | Descripción                           | Resultado Esperado |
+| :--------- | :------- | :--------------------------------------- | :--------------------------------------- |
+| `Asignaturas`   | `AsignaturaWebTestClientIntegrationTest` | Verifica la API REST de asignaturas | Operaciones CRUD correctas a través de endpoints REST |
+| `Matrículas`    | `MatriculaWebTestClientIntegrationTest` | Verifica el flujo completo de creación y consulta de matrículas | Creación correcta de matrícula y recuperación de datos relacionados |
+
+### Cobertura de Pruebas
+
+Las pruebas cubren los siguientes aspectos críticos de la aplicación:
+
+- Autenticación y seguridad: Generación y validación de tokens JWT
+- Acceso a datos: Interacción con repositorios y bases de datos
+- Comunicación entre servicios: Uso correcto de Feign Clients
+- Autorización basada en roles: Validación de permisos según el rol del usuario
+- API REST: Correcto funcionamiento de los endpoints expuestos
+
+### Resultados
+
+Al ejecutar las pruebas, Maven mostrará un resumen similar al siguiente:
+
+```bash
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: XX, Failures: 0, Errors: 0, Skipped: 0
+```
+
+- Tests run: Número total de pruebas ejecutadas
+- Failures: Pruebas que fallaron por aserciones incorrectas
+- Errors: Pruebas que generaron excepciones inesperadas
+- Skipped: Pruebas omitidas
+
+Para ver resultados detallados, se pueden consultar los informes generados en:
+
+{microservicio}/target/surefire-reports/
+
+### Pruebas en el Pipeline CI/CD
+
+El sistema incluye integración con GitHub Actions para ejecutar automáticamente las pruebas en cada cambio:
+
+- El pipeline de CI ejecuta todas las pruebas unitarias y de integración
+- Solo si todas las pruebas son exitosas, se continúa con el proceso de CD
+- Se generan informes de pruebas disponibles como artefactos en GitHub Actions
 
 ## Acceso a los Servicios
 
