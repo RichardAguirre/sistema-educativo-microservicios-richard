@@ -1,15 +1,20 @@
 package com.educativo.matriculas.controller;
 
-import com.educativo.matriculas.client.AsignaturaClient;
-import com.educativo.matriculas.client.UsuarioClient;
-import com.educativo.matriculas.model.Asignatura;
-import com.educativo.matriculas.model.Matricula;
-import com.educativo.matriculas.model.Usuario;
-import com.educativo.matriculas.repository.MatriculaRepository;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +23,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
-import java.util.Collections;
-import static org.mockito.Mockito.doReturn;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import com.educativo.matriculas.client.AsignaturaClient;
+import com.educativo.matriculas.client.UsuarioClient;
+import com.educativo.matriculas.model.Asignatura;
+import com.educativo.matriculas.model.Matricula;
+import com.educativo.matriculas.model.Usuario;
+import com.educativo.matriculas.repository.MatriculaRepository;
 
 public class MatriculaControllerTest {
 
@@ -53,7 +55,6 @@ public class MatriculaControllerTest {
     public void setup() {
         MockitoAnnotations.openMocks(this);
 
-        // Setup Security Context
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
     }
@@ -61,7 +62,6 @@ public class MatriculaControllerTest {
     @Test
     @WithMockUser(username = "admin@example.com", roles = { "ADMIN" })
     public void testCrearMatricula() {
-        // Arrange
         Long usuarioId = 1L;
         Long asignatura1Id = 1L;
         Long asignatura2Id = 2L;
@@ -85,24 +85,19 @@ public class MatriculaControllerTest {
         matricula.setUsuarioId(usuarioId);
         matricula.setAsignaturasIds(Arrays.asList(asignatura1Id, asignatura2Id));
 
-        // Mock authentication
         when(authentication.getName()).thenReturn("admin@example.com");
 
         doReturn(Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")))
         .when(authentication).getAuthorities();
 
-        // Mock clients
         when(usuarioClient.getUsuarioById(usuarioId)).thenReturn(usuario);
         when(asignaturaClient.getAsignaturaById(asignatura1Id)).thenReturn(asignatura1);
         when(asignaturaClient.getAsignaturaById(asignatura2Id)).thenReturn(asignatura2);
 
-        // Mock repository
         when(matriculaRepository.save(any(Matricula.class))).thenReturn(matricula);
 
-        // Act
         ResponseEntity<?> response = matriculaController.crearMatricula(matricula);
 
-        // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 

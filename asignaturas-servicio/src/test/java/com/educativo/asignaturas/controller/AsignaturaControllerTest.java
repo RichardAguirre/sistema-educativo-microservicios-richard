@@ -1,19 +1,21 @@
 package com.educativo.asignaturas.controller;
 
-import com.educativo.asignaturas.model.Asignatura;
-import com.educativo.asignaturas.repository.AsignaturaRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+
+import com.educativo.asignaturas.model.Asignatura;
+import com.educativo.asignaturas.repository.AsignaturaRepository;
 
 public class AsignaturaControllerTest {
 
@@ -30,7 +32,6 @@ public class AsignaturaControllerTest {
 
     @Test
     public void testListarAsignaturas() {
-        // Arrange
         Asignatura asignatura1 = new Asignatura();
         asignatura1.setId(1L);
         asignatura1.setNombre("Programación I");
@@ -47,10 +48,8 @@ public class AsignaturaControllerTest {
         
         when(asignaturaRepository.findAll()).thenReturn(asignaturas);
         
-        // Act
         List<Asignatura> result = asignaturaController.listarAsignaturas();
         
-        // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("Programación I", result.get(0).getNombre());
