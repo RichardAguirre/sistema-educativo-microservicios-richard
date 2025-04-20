@@ -1,7 +1,5 @@
 package com.educativo.usuarios.config;
 
-import com.educativo.usuarios.security.JwtAuthenticationFilter;
-import com.educativo.usuarios.security.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import com.educativo.usuarios.security.JwtAuthenticationFilter;
+import com.educativo.usuarios.security.JwtTokenProvider;
 
 @Configuration
 @EnableWebSecurity
@@ -27,16 +29,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http
-            .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/dashboard/**").permitAll()
-                .requestMatchers("/usuarios/**").hasRole("ADMIN")
-                .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers(mvc.pattern("/auth/**")).permitAll()
+                .requestMatchers(mvc.pattern("/dashboard/**")).permitAll()
+                .requestMatchers(mvc.pattern("/usuarios/**")).hasRole("ADMIN")
+                .requestMatchers(mvc.pattern("/actuator/**")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
