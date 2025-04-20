@@ -2,6 +2,7 @@ services:
   discovery-server:
     build: ./discovery-server
     container_name: discovery-server
+    image: ${DOCKER_USERNAME}/discovery-server:latest
     ports:
       - "8761:8761"
     networks:
@@ -24,6 +25,7 @@ services:
   usuarios-servicio:
     build: ./usuarios-servicio
     container_name: usuarios-servicio
+    image: ${DOCKER_USERNAME}/usuarios-servicio:latest
     ports:
       - "8081:8081"
     environment:
@@ -39,6 +41,7 @@ services:
   asignaturas-servicio:
     build: ./asignaturas-servicio
     container_name: asignaturas-servicio
+    image: ${DOCKER_USERNAME}/asignaturas-servicio:latest
     ports:
       - "8082:8082"
     environment:
@@ -52,6 +55,7 @@ services:
   matriculas-servicio:
     build: ./matriculas-servicio
     container_name: matriculas-servicio
+    image: ${DOCKER_USERNAME}/matriculas-servicio:latest
     ports:
       - "8083:8083"
     environment:
@@ -67,6 +71,7 @@ services:
   monitor-servicio:
     build: ./monitor-servicio
     container_name: monitor-servicio
+    image: ${DOCKER_USERNAME}/monitor-servicio:latest
     ports:
       - "8085:8085"
     environment:
