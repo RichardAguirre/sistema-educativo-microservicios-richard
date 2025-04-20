@@ -24,3 +24,4 @@ logs/
 *.jar
 !mvnw
 !mvnw.cmd
+.env
