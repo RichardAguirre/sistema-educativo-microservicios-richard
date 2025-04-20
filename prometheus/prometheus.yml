@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'spring-actuator'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['usuarios-servicio:8081', 'asignaturas-servicio:8082', 'matriculas-servicio:8083', 'monitor-servicio:8085']

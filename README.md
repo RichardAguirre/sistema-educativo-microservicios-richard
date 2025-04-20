@@ -292,10 +292,12 @@ mvn test -f discovery-server\pom.xml && mvn test -f usuarios-servicio\pom.xml &&
 ## Acceso a los Servicios
 
 ### Eureka Server (Discovery)
+
 - **URL**: [http://localhost:8761/](http://localhost:8761/)
 - **Descripción**: Muestra todos los microservicios registrados, su estado y metadatos.
 
 ### Dashboards de Microservicios
+
 Cada microservicio tiene un dashboard para monitorear su estado:
 
 - **Usuarios Dashboard**:
@@ -320,11 +322,11 @@ Cada microservicio tiene un dashboard para monitorear su estado:
 POST /auth/registro
 ```
 
-| Campo | Tipo | Descripción |
-| :-------- | :------- | :------------------------- |
-| `nombre` | `string` | **Requerido**. Nombre del usuario |
-| `email` | `string` | **Requerido**. Email del usuario (único) |
-| `password` | `string` | **Requerido**. Contraseña del usuario |
+| Campo      | Tipo     | Descripción                              |
+| :--------- | :------- | :--------------------------------------- |
+| `nombre`   | `string` | **Requerido**. Nombre del usuario        |
+| `email`    | `string` | **Requerido**. Email del usuario (único) |
+| `password` | `string` | **Requerido**. Contraseña del usuario    |
 
 Ejemplo de solicitud:
 
@@ -363,9 +365,9 @@ UPDATE usuarios_db.usuario SET rol = 'ADMIN' WHERE email = 'admin@example.com';
 POST /auth/login
 ```
 
-| Campo | Tipo | Descripción |
-| :-------- | :------- | :------------------------- |
-| `email` | `string` | **Requerido**. Email del usuario |
+| Campo      | Tipo     | Descripción                           |
+| :--------- | :------- | :------------------------------------ |
+| `email`    | `string` | **Requerido**. Email del usuario      |
 | `password` | `string` | **Requerido**. Contraseña del usuario |
 
 Ejemplo de solicitud:
@@ -432,9 +434,9 @@ Respuesta exitosa:
 GET /usuarios/{id}
 ```
 
-| Parámetro | Tipo | Descripción |
-| :-------- | :------- | :------------------------- |
-| `id` | `long` | **Requerido**. ID del usuario a obtener |
+| Parámetro | Tipo   | Descripción                             |
+| :-------- | :----- | :-------------------------------------- |
+| `id`      | `long` | **Requerido**. ID del usuario a obtener |
 
 Ejemplo de solicitud:
 
@@ -460,11 +462,11 @@ Respuesta exitosa:
 PUT /usuarios/{id}
 ```
 
-| Parámetro | Tipo | Descripción |
-| :-------- | :------- | :------------------------- |
-| `id` | `long` | **Requerido**. ID del usuario a actualizar |
-| `nombre` | `string` | **Opcional**. Nuevo nombre del usuario |
-| `email` | `string` | **Opcional**. Nuevo email del usuario |
+| Parámetro | Tipo     | Descripción                                |
+| :-------- | :------- | :----------------------------------------- |
+| `id`      | `long`   | **Requerido**. ID del usuario a actualizar |
+| `nombre`  | `string` | **Opcional**. Nuevo nombre del usuario     |
+| `email`   | `string` | **Opcional**. Nuevo email del usuario      |
 
 Ejemplo de solicitud:
 
@@ -529,9 +531,9 @@ Respuesta exitosa:
 GET /asignaturas/{id}
 ```
 
-| Parámetro | Tipo | Descripción |
-| :-------- | :------- | :------------------------- |
-| `id` | `long` | **Requerido**. ID de la asignatura a obtener |
+| Parámetro | Tipo   | Descripción                                  |
+| :-------- | :----- | :------------------------------------------- |
+| `id`      | `long` | **Requerido**. ID de la asignatura a obtener |
 
 Ejemplo de solicitud:
 
@@ -557,11 +559,11 @@ Respuesta exitosa:
 POST /asignaturas/crear
 ```
 
-| Campo | Tipo | Descripción |
-| :-------- | :------- | :------------------------- |
-| `nombre` | `string` | **Requerido**. Nombre de la asignatura |
-| `codigo` | `string` | **Requerido**. Código único de la asignatura |
-| `creditos` | `int` | **Requerido**. Cantidad de créditos |
+| Campo      | Tipo     | Descripción                                  |
+| :--------- | :------- | :------------------------------------------- |
+| `nombre`   | `string` | **Requerido**. Nombre de la asignatura       |
+| `codigo`   | `string` | **Requerido**. Código único de la asignatura |
+| `creditos` | `int`    | **Requerido**. Cantidad de créditos          |
 
 Ejemplo de solicitud:
 
@@ -593,12 +595,12 @@ Respuesta exitosa:
 PUT /asignaturas/{id}
 ```
 
-| Parámetro | Tipo | Descripción |
-| :-------- | :------- | :------------------------- |
-| `id` | `long` | **Requerido**. ID de la asignatura a actualizar |
-| `nombre` | `string` | **Opcional**. Nuevo nombre de la asignatura |
-| `codigo` | `string` | **Opcional**. Nuevo código de la asignatura |
-| `creditos` | `int` | **Opcional**. Nueva cantidad de créditos |
+| Parámetro  | Tipo     | Descripción                                     |
+| :--------- | :------- | :---------------------------------------------- |
+| `id`       | `long`   | **Requerido**. ID de la asignatura a actualizar |
+| `nombre`   | `string` | **Opcional**. Nuevo nombre de la asignatura     |
+| `codigo`   | `string` | **Opcional**. Nuevo código de la asignatura     |
+| `creditos` | `int`    | **Opcional**. Nueva cantidad de créditos        |
 
 Ejemplo de solicitud:
 
@@ -630,9 +632,9 @@ Respuesta exitosa:
 DELETE /asignaturas/{id}
 ```
 
-| Parámetro | Tipo | Descripción |
-| :-------- | :------- | :------------------------- |
-| `id` | `long` | **Requerido**. ID de la asignatura a eliminar |
+| Parámetro | Tipo   | Descripción                                   |
+| :-------- | :----- | :-------------------------------------------- |
+| `id`      | `long` | **Requerido**. ID de la asignatura a eliminar |
 
 Ejemplo de solicitud:
 
@@ -657,11 +659,11 @@ Respuesta exitosa:
 POST /matriculas
 ```
 
-| Campo | Tipo | Descripción |
-| :-------- | :------- | :------------------------- |
-| `usuarioId` | `long` | **Requerido**. ID del usuario que se matricula |
-| `asignaturasIds` | `array` | **Requerido**. Array de IDs de asignaturas |
-| `periodo` | `string` | **Opcional**. Periodo académico (ej: "2025-1") |
+| Campo            | Tipo     | Descripción                                    |
+| :--------------- | :------- | :--------------------------------------------- |
+| `usuarioId`      | `long`   | **Requerido**. ID del usuario que se matricula |
+| `asignaturasIds` | `array`  | **Requerido**. Array de IDs de asignaturas     |
+| `periodo`        | `string` | **Opcional**. Periodo académico (ej: "2025-1") |
 
 Ejemplo de solicitud:
 
@@ -715,9 +717,9 @@ Respuesta exitosa:
 GET /matriculas/{id}
 ```
 
-| Parámetro | Tipo | Descripción |
-| :-------- | :------- | :------------------------- |
-| `id` | `long` | **Requerido**. ID de la matrícula a obtener |
+| Parámetro | Tipo   | Descripción                                 |
+| :-------- | :----- | :------------------------------------------ |
+| `id`      | `long` | **Requerido**. ID de la matrícula a obtener |
 
 Ejemplo de solicitud:
 
@@ -765,8 +767,8 @@ Respuesta exitosa:
 GET /matriculas/usuario/{usuarioId}
 ```
 
-| Parámetro | Tipo | Descripción |
-| :-------- | :------- | :------------------------- |
+| Parámetro   | Tipo   | Descripción                                                       |
+| :---------- | :----- | :---------------------------------------------------------------- |
 | `usuarioId` | `long` | **Requerido**. ID del usuario cuyas matrículas se quieren obtener |
 
 Ejemplo de solicitud:
