@@ -5,13 +5,12 @@ import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
-@TestPropertySource(properties = {
-    "spring.application.name=asignaturas-servicio-test",
-    "server.port=0"
-})
+import com.educativo.asignaturas.config.TestConfig;
+
+@SpringBootTest(classes = {AsignaturasApplication.class, TestConfig.class})
+@ActiveProfiles("test")
 class AsignaturasApplicationTests {
 
     @MockBean

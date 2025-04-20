@@ -8,10 +8,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
  
 import com.educativo.asignaturas.model.Asignatura;
 import com.educativo.asignaturas.repository.AsignaturaRepository;
@@ -22,7 +25,7 @@ import com.educativo.asignaturas.repository.AsignaturaRepository;
 public class AsignaturaWebTestClientIntegrationTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebApplicationContext context;
     
     private WebTestClient webTestClient;
     
@@ -31,8 +34,15 @@ public class AsignaturaWebTestClientIntegrationTest {
     
     @BeforeEach
     public void setup() {
+        // Configurar MockMvc con soporte de seguridad explícito
+        MockMvc mockMvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(SecurityMockMvcConfigurers.springSecurity())
+            .build();
+            
         this.webTestClient = MockMvcWebTestClient.bindTo(mockMvc).build();
 
+        // Cargar datos de prueba
         if (asignaturaRepository.count() == 0) {
             Asignatura prog1 = new Asignatura();
             prog1.setNombre("Programación I");
