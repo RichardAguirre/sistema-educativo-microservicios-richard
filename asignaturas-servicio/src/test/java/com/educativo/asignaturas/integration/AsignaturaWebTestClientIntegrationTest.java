@@ -6,13 +6,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
  
 import com.educativo.asignaturas.model.Asignatura;
-import com.educativo.asignaturas.repository.AsignaturaRepository; 
+import com.educativo.asignaturas.repository.AsignaturaRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
@@ -20,6 +22,8 @@ import com.educativo.asignaturas.repository.AsignaturaRepository;
 public class AsignaturaWebTestClientIntegrationTest {
 
     @Autowired
+    private ApplicationContext context;
+    
     private WebTestClient webTestClient;
     
     @Autowired
@@ -27,6 +31,19 @@ public class AsignaturaWebTestClientIntegrationTest {
     
     @BeforeEach
     public void setup() {
+        this.webTestClient = WebTestClient
+            .bindToApplicationContext(context)
+            .apply(springSecurity())
+            .configureClient()
+            .build();
+        
+        if (asignaturaRepository.count() == 0) {
+            Asignatura prog1 = new Asignatura();
+            prog1.setNombre("Programación I");
+            prog1.setCodigo("PROG101");
+            prog1.setCreditos(3);
+            asignaturaRepository.save(prog1);
+        }
     }
     
     @Test
@@ -53,7 +70,7 @@ public class AsignaturaWebTestClientIntegrationTest {
     }
     
     @Test
-    @WithMockUser(roles = {"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})  // Simulamos usuario ADMIN
     public void testCrearAsignatura() {
         Asignatura nuevaAsignatura = new Asignatura();
         nuevaAsignatura.setNombre("Asignatura Test Integration");
