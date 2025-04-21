@@ -370,6 +370,36 @@ El sistema incluye integración con GitHub Actions para ejecutar automáticament
 - Solo si todas las pruebas son exitosas, se continúa con el proceso de CD
 - Se generan informes de pruebas disponibles como artefactos en GitHub Actions
 
+## Monitoreo y Visualización: Prometheus y Grafana
+
+El sistema cuenta con monitoreo centralizado y visualización de métricas a través de **Prometheus** y **Grafana**, ya preconfigurados y disponibles al levantar el entorno con Docker Compose.
+
+### Acceso a Prometheus
+
+- **URL**: [http://localhost:9090](http://localhost:9090)
+- **Descripción**: Permite consultar y explorar métricas de todos los microservicios, así como del pipeline de CI/CD (GitHub Actions) si está configurado el exporter.
+- **Configuración**: Prometheus está configurado para recolectar métricas de:
+  - Microservicios Spring Boot (`/actuator/prometheus`)
+  - Exporter de GitHub Actions (`/metrics` en el puerto 9171)
+- **Verificación**: Ver el estado de los targets en `Status > Targets` y buscar métricas como `http_server_requests_seconds_count`, `jvm_memory_used_bytes`, `github_actions_workflow_run_status`, entre otras.
+
+### Acceso a Grafana
+
+- **URL**: [http://localhost:3000](http://localhost:3000)
+- **Usuario/Contraseña por defecto**: admin / admin
+- **Descripción**: Plataforma de visualización donde puedes importar dashboards comunitarios o crear paneles personalizados para monitorear el estado y rendimiento de los microservicios y pipelines de CI/CD.
+- **Dashboards configurados**:
+  - **4701**: Micrometer JVM dashboard
+  - **10280**: Spring Boot 2.1 Statistics
+  - **15187**: GitHub Actions Overview (para métricas de CI/CD)
+- **Configuración**: Prometheus ya está configurado como fuente de datos en Grafana. Solo se debe importar los dashboards deseados adicionales desde la opción **Dashboards > Import**.
+
+### Resumen de configuración
+
+- **Prometheus** Se configuro para recolectar y almacenar métricas de todos los servicios y del pipeline de CI/CD.
+- **Grafana** se configuro para visualizar y analizar métricas mediante dashboards listos para usar o personalizados.
+- Ambas herramientas están disponibles automáticamente al iniciar el entorno con Docker Compose.
+
 ## Acceso a los Servicios
 
 ### Eureka Server (Discovery)
