@@ -109,6 +109,17 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
 
+  github-exporter:
+    image: github-exporter:local
+    container_name: github-exporter
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      REPOS: RichardAguirre/sistema-educativo-microservicios-richard
+    ports:
+      - "9171:9171"
+    networks:
+      - educ-network
+
 networks:
   educ-network:
     driver: bridge

@@ -3,7 +3,21 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
+  # Job para recolectar métricas del propio Prometheus
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Job único para todos los microservicios Spring Boot expuestos en la red de Docker Compose
   - job_name: 'spring-actuator'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['usuarios-servicio:8081', 'asignaturas-servicio:8082', 'matriculas-servicio:8083', 'monitor-servicio:8085']
+      - targets:
+          - 'usuarios-servicio:8081'
+          - 'asignaturas-servicio:8082'
+          - 'matriculas-servicio:8083'
+          - 'monitor-servicio:8085'
+  
+  - job_name: 'github-exporter'
+    static_configs:
+      - targets: ['github-exporter:9171']
