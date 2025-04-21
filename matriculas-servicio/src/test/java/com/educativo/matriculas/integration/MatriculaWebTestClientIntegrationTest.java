@@ -5,26 +5,33 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.servlet.MockMvc;
 
 import com.educativo.matriculas.client.AsignaturaClient;
 import com.educativo.matriculas.client.UsuarioClient;
+import com.educativo.matriculas.config.TestConfig;
 import com.educativo.matriculas.model.Asignatura;
 import com.educativo.matriculas.model.Matricula;
 import com.educativo.matriculas.model.Usuario;
 import com.educativo.matriculas.repository.MatriculaRepository;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWebTestClient
+@SpringBootTest(classes = {TestConfig.class})
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class MatriculaWebTestClientIntegrationTest {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @Autowired
+    private MockMvc mockMvc;
     
     @MockBean
     private UsuarioClient usuarioClient;
